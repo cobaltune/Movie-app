@@ -108,7 +108,7 @@ react 콘솔창에서 <script>부분
 
 react 안 켜질 때 (terminal)
 
-  cd movie/horror
+  cd React-Learning/terrible
   npm start
 
 
