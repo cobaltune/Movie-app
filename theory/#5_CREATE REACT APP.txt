@@ -21,9 +21,11 @@ window + R > cmd(명령 프롬프트)
   npx
   exit
 
-  npx create-react-app horror // 다운로드
+  cd OneDrive/바탕 화면/React-Learning
 
-  code horror // vsc로 open
+  npx create-react-app terrible // 다운로드
+
+  code terrible // vsc로 open
 
 
 [package.json] 여길 보면
