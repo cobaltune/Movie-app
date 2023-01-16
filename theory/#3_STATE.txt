@@ -1,0 +1,771 @@
+
+#3.0 Understanding State
+
+state (in React.js)
+: (기본적으로) 데이터가 저장되는 곳
+
+
+vanilla.js로 진행 중인 예제를 완성하려면
+  - 현재 : `counter`를 증가시키고, 그걸 UI에 디스플레이
+  - 개선 : state로 counter(값이 바뀌는 데이터) 수정
+
+우선 기존 코드 세팅 변경
+
+  const root = document.getElementById('root');
+
+      const Container = () => (
+        <div>
+          <h3>Total clicks: 0</h3>
+          <button>Click me</button>
+        </div>
+      );
+      ReactDOM.render(<Container />, root);
+  
+
+React.js 코드 내에서 카운트를 셀 수 있게 1
+: 별로 좋지 않은 방식
+  (값을 바꿀 때마다, 다시 렌더링 하는 걸 잊어서는 안되기 때문)
+
+  const root = document.getElementById('root');
+
+      let counter = 0;
+      function countUp() {
+        counter = counter + 1;
+      }
+
+      const Container = () => (
+        <div>
+          <h3>Total clicks: {counter}</h3>
+          <button onClick={countUp}>Click me</button>
+        </div>
+      );
+      ReactDOM.render(<Container />, root);
+
+
+*문제
+프로그램이 동작하는 원리를 생각해 볼 때, 현재 컴포넌트를 한 번만 렌더링하고 있기 때문에
+페이지가 로드될 때 UI가 업데이트가 되고 있지 않고 있음
+
+: `Container`를 렌더링하고 `root`에 담는데,
+`render`에 `<Container />`에서 `counter` 값으로 `0`이 됨 (하지만 클릭 시, 카운트는 증가하고 있음)
+
+`Container`를 re렌더링하고 다시 보여줘야 함 (새로운 버전의 `Container`)
+⇒ `countUp`을 호출할 때마다 `ReactDOM.render`를 다시 호출
+
+  const root = document.getElementById('root');
+
+      let counter = 0;
+      function countUp() {
+        counter = counter + 1;
+        ReactDOM.render(<Container />, root);
+      }
+
+      const Container = () => (
+        <div>
+          <h3>Total clicks: {counter}</h3>
+          <button onClick={countUp}>Click me</button>
+        </div>
+      );
+      ReactDOM.render(<Container />, root);
+
+
+이렇게도 할 수 있지만 아래가 보다 나음
+
+  const root = document.getElementById('root');
+
+      let counter = 0;
+      function countUp() {
+        counter = counter + 1;
+        render();
+      }
+
+      function render() {
+        ReactDOM.render(<Container />, root);
+      }
+
+      const Container = () => (
+        <div>
+          <h3>Total clicks: {counter}</h3>
+          <button onClick={countUp}>Click me</button>
+        </div>
+      );
+      render();
+    
+
+다시 말하지만 `const Container = () => (`는 just `function`
+
+  function Container (){
+    return
+      <div>
+          <h3>Total clicks: {counter}</h3>
+          <button onClick={countUp}>Click me</button>
+      </div>
+  }
+
+위 코드와 같음
+
+
+여기서 React가 얼마나 좋은지 잠시 토크
+  - Vanilla.js 예시를 열어서 - 요소 검사를 열고 - 버튼을 클릭하면
+      - chrome에서 `<body>`랑 `<span>`요소들이 업데이트되고 있는 걸 바로 보여줌
+      
+  - React.js 예시를 열어서 - 요소 검사를 열고 - 버튼을 클릭하면
+      - UI에서 바뀐 부분만 업데이트됨
+
+위와 같이 인터렉티브한걸 만들기에 최적화되어 있기 때문에 React를 이용함
+
+
+#3.1 setState part One
+
+React.js 코드 내에서 카운트를 셀 수 있게 2
+: 프로페셔널한 방식
+
+⇒ React.js 코드 내에서 데이터를 보관하고,
+  (함수를 계속 불러줄 필요 없이) 자동으로 리렌더링을 일으킬 수 있도록 
+  다시 아무것도 없던 때로 세팅 변경 및 함수 이름 변경
+
+  const root = document.getElementById('root');
+      function App() {
+        return (
+          <div>
+            <h3>Total clicks: 0</h3>
+            <button>Click me</button>
+          </div>
+        );
+      }
+      ReactDOM.render(<App />, root);
+
+
+함수 내에서 `return`문 전에 상수를 하나 만들어서 어디에 데이터를 담으면 되는지 알려줌
+
+  const data = React.useState(0);  // 초기값을 설정할 수 있음
+  console.log(data);
+
+  // 콘솔창에서
+  (2) [0, f]
+
+  /* 코드 해석
+  counter라는 data를 주고, 그 counter 값을 바꿀 수 있는 함수 */
+
+(초기값 미지정 시) `undefined`는 data고, `f`는 data를 바꿀 때 사용하는 `function`
+
+
+위 코드는 아래와 똑같은 역할
+
+  let counter = 0;
+  function countUp() {
+  }
+
+
+하지만 배열 상태 그대로 사용하는 건 보기 불편하니 배열에서 요소들을 꺼내서 이름을 부여해보자
+
+  // ex 2) 적용
+  const root = document.getElementById('root');
+      function App() {
+        const [counter, modifier] = React.useState(0);
+        return (
+          <div>
+            <h3>Total clicks: {counter}</h3>
+            <button>Click me</button>
+          </div>
+        );
+      }
+      ReactDOM.render(<App />, root);
+
+
+ex 1) 시간이 오래 걸려서 비추
+
+  const x = [1, 2, 3];
+
+  const a = x[0];
+  const b = x[1];
+  const c = x[2];
+
+
+ex 2) 빈 배열을 만들고 - 첫 번째 요소를 꺼내서 a라는 변수 안에 담아주는 형식
+
+  const [a, b, c] = x;
+
+∴ React.js가 data를 담는 것과 업데이트하는 걸 어떻게 도와주는지 배움
+
+
+#3.2 setState part Two
+
+배울 것
+- 왜 `modifier`가 필요한지
+
+
+`counter`를 업데이트하는데 `modifier`함수를 쓰려고 함
+`modifier` 함수는 값을 하나 받는데, 어떤 값을 부여하던 그 값으로 업데이트하고 리렌더링하려고 함
+
+  const root = document.getElementById('root');
+      function App() {
+        const [counter, modifier] = React.useState(0);
+        const onClick = () => {
+          modifier(12345678);
+        };
+        return (
+          <div>
+            <h3>Total clicks: {counter}</h3>
+            <button onClick={onClick}>Click me</button>
+          </div>
+        );
+      }
+      ReactDOM.render(<App />, root);
+
+  // UI에서
+  Total clicks: 12345678
+
+  /* 코드 해석
+  React.useState 함수는 counter 같은 데이터를 숫자형 데이터로 건네주고,
+  그 데이터 값을 바꿀 함수도 함께 줌
+  그리고 그 함수를 이용해서 데이터를 바꿨을 때,
+  데이터 값이 바뀌고 컴포넌트도 동시에 리렌더링 됨 (= 업데이트 완료) */
+
+
++) 보통 데이터에 이름을 붙일 때 `counter`처럼 원하는대로 붙이고
+   `modifier`에는 set 뒤에 이전 데이터 이름을 붙여줌
+
+  const root = document.getElementById('root');
+      function App() {
+        const [counter, setCounter] = React.useState(0);
+        const onClick = () => {
+          setCounter(counter + 1);
+        };
+        return (
+          <div>
+            <h3>Total clicks: {counter}</h3>
+            <button onClick={onClick}>Click me</button>
+          </div>
+        );
+      }
+      ReactDOM.render(<App />, root);
+
+
+∴ 변수를 컴포넌트에 연결해서 - 변수에 데이터를 담은 다음 - 해당 변수에 담긴 값을 바꾸는 것
+
+
+#3.3 Recap
+
+`modifier` 함수를 사용해 `state`, 즉 어플리케이션의 데이터를 바꿀 때
+컴포넌트 전체가 새로운 값을 가지고 재생성됨
+
+⇒ `modifier` 함수를 이용해서 `state`를 바꾸면, 전체 컴포넌트가 재생성되고
+   `function App` 코드가 다시 한번 실행됨
+   `return`도 한 번 더 실행되지만, (재생성된 후) 이번에는 새로운 값을 가지고 실행됨
+
+∴ `state`가 바뀌면 리렌더링이 일어난다
+
+
+vanilla.js로 작업하면 겪는
+  - <HTML>요소를 생성하거나 찾을
+  - 이벤트리스너를 더해줄
+  - UI를 업데이트해 줄 필요가 없어짐
+
+React로 완전히 대체된 부분
+  - 바로 <HTML> 만들고
+  - 곧바로 이벤트리스너를 더해주고
+  - UI를 업데이트하면 자동으로 리렌더링 됨
+
+
+#3.4 State Functions
+
+배울 것
+- 사용자들의 `<iuput>`을 어떻게 얻는지
+- `<form>`을 만들었을 때 `state`는 어떤 식으로 작용하는지
+  (이제껏 배운 것들로 작은 프로젝트들을 처리하는 연습)
+
+기존 코드는 별로 좋은 방법이 아님
+: `counter`는 다른 곳에서 업데이트될 수 있기 때문에
+  (어쩌면 `counter`가 다른 곳에서 변경돼서 우리가 생각했던 값이 아닐 수도)
+
++) 위 버그에 대해서 지금 설명하기 어렵지만,
+이전 단계의 `state`를 이용해서 현재 `state`를 바꾸려 했지만 결과가 예상과 다르게 나올 수도 있다
+
+이런 현상들은 흔치 않고, 자주 쓰이진 않겠지만 `state`를 바꾸는 2가지 방법을 해보자
+
+
+ex 1) `setCounter`를 설정해서 새 값으로 변경해 주는 것
+
+  setCounter(123);
+
+하지만 다시 클릭하면 더이상 변하지 않음
+
+
+ex 2) 이전 값을 이용해서 현재 값을 계산하는 것
+
+  // ex 1)
+  // setCounter(counter + 1);
+
+  // ex 2)
+    setCounter((current) => current + 1);
+
+  /* 위 두 줄은 똑같은 작업을 하지만 아래 방법이 더 안전함
+  이렇게 썼을 때 react가 이 current가 확실히 현재 값이라는 걸 보장하고 있기 때문
+
+  예상치 못한 업데이트가 어디선가 일어났다고 해도 혼동을 주는 걸 방지함 */
+
++) `setCounter`에는 함수를 넣을 수 있음
+  첫 번째 argument는 현재 값이고, 이 함수의 `return`값이 새로운 `state`가 되는 것
+  이제 이 함수가 무엇을 `return`하던지 그게 새로운 `state`가 됨
+
+
+#3.5 Inputs and State
+
+만들 것
+- unit conversion(단위 변환) 앱
+  - 분에서 시간으로, 시간에서 분으로
+  - 킬로미터에서 마일로, 킬로그램에서 파운드로
+
+
+초기 세팅 코드
+
+  function App() {
+        return (
+          <div>
+            <h1>Super Converter</h1>
+          </div>
+        );
+      }
+      const root = document.getElementById('root');
+      ReactDOM.render(<App />, root);
+
+
+먼저 분을 시간 단위로 바꾸는 것부터
+
+  function App() {
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <label for='minutes'>Minutes</label>
+            <input id='minutes' placeholder='Minutes' type='number' />
+            <label for='hours'>Hours</label>
+            <input id='hours' placeholder='Hours' type='number' />
+          </div>
+        );
+      }
+
+
+*문제
+위 문법은 React JS와 맞지 않음, JSX에서는 다르게 표현해줘야 함
+`for`은 javascript 용어라서 사용할 수 없음, `class` 또한 마찬가지
+이들을 쓰려면 `htmlFor`, `className` 로 작성해야 함
+
+
+react code로 `minutes`에 어떤 숫자를 적었는지 추적할 수 있음
+but 지금은 적힌 숫자의 `value`가 뭔지 모름
+
+React JS세계에서는 위 `<input>`은 `uncontrolled`라고 알려져 있음
+고로 `<input>`의 `value`를 통제할 수 없다는 뜻
+
+
+그래서 `minutes`에 필요한 `state` 만들기
+
+  function App() {
+        const [minutes, setMinutes] = React.useState();
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <label for='minutes'>Minutes</label>
+            <input
+              value={minutes}
+              id='minutes'
+              placeholder='Minutes'
+              type='number'
+            />
+            <label for='hours'>Hours</label>
+            <input id='hours' placeholder='Hours' type='number' />
+          </div>
+        );
+      }
+
+이제 `value`를 `<input>`에게 줄 수 있음
+
+
+사용자가 `<input>`에 새로운 값을 입력할 때마다 이 `value`(=`state`) 업데이트 시키기
+
+  function App() {
+        const [minutes, setMinutes] = React.useState();
+        const onChange = () => {
+          console.log('somebody wrote');
+        };
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <label for='minutes'>Minutes</label>
+            <input
+              value={minutes}
+              id='minutes'
+              placeholder='Minutes'
+              type='number'
+              onChange={onChange}
+            />
+            <label for='hours'>Hours</label>
+            <input id='hours' placeholder='Hours' type='number' />
+          </div>
+        );
+      }
+
+
+`<input>`의 입력값을 알고 싶음
+
+  function App() {
+        const [minutes, setMinutes] = React.useState();
+        const onChange = (event) => {
+          setMinutes(event.target.value);
+        };
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <label for='minutes'>Minutes</label>
+            <input
+              value={minutes}
+              id='minutes'
+              placeholder='Minutes'
+              type='number'
+              onChange={onChange}
+            />
+            <h4>You want to convert{minutes}</h4>
+            <label for='hours'>Hours</label>
+            <input id='hours' placeholder='Hours' type='number' />
+          </div>
+        );
+      }
+      const root = document.getElementById('root');
+      ReactDOM.render(<App />, root);
+
+⇒ 우리가 입력한 `<input>`의 `value`를 바탕으로 component를 업데이트해주고 있음
+
+
+#3.6 State Practice part One
+
+분을 시 단위로 고쳐주는 공식 (/ 60)
+
+  // ex 1)
+  value={minutes / 60};
+
+  // ex 2)
+  value={Math.round(minutes / 60)};
+
+`Math.round()`
+: 소수점 반올림해 줌
+
+
+reset `<button>` 생성
+
+  <button onClick={reset}>Reset</button>;
+
+  const reset = () => setMinutes(0);
+
+⇒ `state`를 리스닝 하거나, 연결한 모든 것들은 전부 0으로 돌림
+  이제 `hours`도 `minutes`단위로 변환해 주고 싶음 (=`flip`, 뒤집어 주는)
+
+  // hours <input>에 disabled 속성 추가
+  disabled
+
+
+#3.7 State Practice part Two
+
+만들 것
+
+- 단위 변환을 뒤집어보는 함수(`flip function`)
+  - 클릭하면 `Hours`를 `enabled`(입력 가능)하게 해주고
+  - 반대로 `Minutes`는 `disabled`(불가능)하게
+  - 다시 한번 클릭하면 `Hours`를 `disabled`해주고, `Minutes`를 `enabled`
+
+새로운 `state` 조작
+
+  <button onClick={onFlip}>Flip</button>
+
+  const [flipped, setFlipped] = React.useState(false);
+
+
+  // ex 1)
+  const onFlip = () => setFlipped(!flipped);
+
+  // ex 2) 이 방법을 더 선호
+  // 현재 state값을 넣어주고 결과는 그 반대로 도출하라고 명령
+  const onFlip = () => setFlipped((current) = !current);
+
+
+만약 `onFlip`효과를 가진 버튼을 누르면 위 `flipeed` 값을 반전 시킴
+
+  - `flipped`이 `true`상태라면 `false`를 반환
+  - `flipped`이 `false`상태라면 `true`를 반환
+
+  ⇒ 현재 `state`를 바탕으로 새로운 `state`를 계산
+
+
+  disabled={flipped === false}
+  // disabled={!flipped}
+
+  // minutes의 <input> 속성 줄 코드 추가
+  disabled={flipped === true}
+  // disabled={flipped}
+
+  /* 코드 해석
+  flipped는 단순히 true 혹은 false인 변수,
+  flip 버튼을 누르면 onFlip 함수가 실행되는데
+  onFlip 함수는 현재 값을 받아서 그 반대의 값을 내놓음
+
+
+  만약 현재 값이 true면 결과로 false를 내놓을 거고
+  현재 값이 false면 true를 반환 */
+
+
+`flipped`의 default 값이 `false`니까,
+`flipped`가 `false`면 `hours`는 `disabled`이고
+= `flipped`가 `false`면 `true`가 되어야 한다는 뜻
+
+`hours <input>`의 `change` event를 리스닝 해보자
+: `flip`하고 `enabled`된 `hours`에 뭔가를 쓰려고 하면 안 써짐
+
+  onChange={onChange};
+
+
+입력한 값 그대로의 `value`를 보여주고 싶으면
+(물론 `minutes <input>`에는 단위 변환된 값으로 보여주고)
+
+  // hours <input>
+  value={flipped ? minutes: Math.round(minutes / 60)};
+
+  /* 코드 해석
+  만약 현재 flipped가 (true)라면 현재 값만 보여줘
+  = 단위 변환은 보여주지마 */
+
+  /* 코드 해석 2
+  만약 flipped 상태가 아니라면 (false) 변환된 값을 보여줘 */
+
+
+모든 `minutes`의 이름을 `amount`로 수정 후 진행
+
+
+시를 분으로 바꾸는 공식 (* 60)
+
+  // amount <input>
+  value={flipped ? amount * 60 : amount}
+
+  /* 코드 해석
+  만약 현재 flipped 상태가 아니라면 (false) amount를 보여줘 */
+
++) 같은 장소에서 두 가지 `state`를 조합해서 쓰고 있음 → 다음 강의에서 복습
+
+
+*문제
+`flip`을 할 때마다 변환된 값이 바뀜
+
+그래서 `onFlip`함수에다가 `setFlipped` 말고도 `reset` 함수도 실행
+
+  const onFlip = () => {
+  reset();
+  setFlipped((current) => !current);
+  };
+
+
+#3.8 Recap
+
+`minutes`와 `hours <input>` 모두에 `onChange` 함수를 걸어놨기 때문에 `minutes` 대신 `amount`라고 변경함
+(헷갈리는 이름, 멈춰! ㅋㅋ)
+
+
+`flip` 상태에 따라 바뀌는 `state` 작명 추천해 주다가
+( flipped / switched / inverted ) 좋은데라며 모든 이름 바꾸는 그 ..
+
+
+사용자에게 더 확실한 상태를 알려주고 싶다면
+
+  <button onClick={onInvert}>{inverted ? "Turn back" : "Invert"}</button>
+
+  /* 코드 해석
+  만약 inverted 상태라면 "Turn back"이 뜨고,
+  inverted 상태가 아니라면 "Invert"가 뜨게끔 */
+
+
+∴ `state`를 세팅하는 좋은 연습이자,
+`state`를 바탕으로 UI를 변경할 수 있다는 게 얼마나 유용한지 알 수 있음
+
+
+#3.9 Final Practice and Recap
+
+만들 것
+- 일종의 메뉴바
+
+두 개의 단위 변환기를 만들어줄 거임 (사용자가 원하는 단위 변환기를 선택할 수 있게)
+- 분(minutes) / 시간(hours) 변환기
+- 마일(miles) / 킬로미터(km) 변환기
+
+
+코드 복붙, 이름 수정, 제목 삭제
+
+  function MinutesToHours() {
+        const [amount, setAmount] = React.useState();
+        const [inverted, setInverted] = React.useState(false);
+        const onChange = (event) => {
+          setAmount(event.target.value);
+        };
+        const reset = () => setAmount(0);
+        const onFlip = () => {
+          reset();
+          setInverted((current) => !current);
+        };
+        return (
+          <div>
+            <div>
+              <label for='amount'>Amount</label>
+              <input
+                value={inverted ? amount * 60 : amount}
+                id='amount'
+                placeholder='Amount'
+                type='number'
+                onChange={onChange}
+                disabled={inverted === true}
+                // disabled={inverted}
+              />
+            </div>
+            <div>
+              <label for='hours'>Hours</label>
+              <input
+                value={inverted ? amount : Math.round(amount / 60)}
+                id='hours'
+                placeholder='Hours'
+                type='number'
+                disabled={inverted === false}
+                // disabled={!inverted}
+                onChange={onChange}
+              />
+            </div>
+            <button onClick={reset}>Reset</button>
+            <button onClick={onFlip}>Flip</button>
+          </div>
+        );
+      }
+
+  function App() {
+        return (
+          <div>
+            <h1>Super Converter</h1>
+          </div>
+        );
+      }
+      const root = document.getElementById('root');
+      ReactDOM.render(<App />, root);
+
+: 코드를 복붙 및 수정한 이유는  `App`이 시/분 변환에 신경 껐으면 해서,
+  이제 `App`은 우리가 만들 여러 변환기들을 고를 수 있게 함
+
+
+컴포넌트는 그 안에 또 다른 컴포넌트를 렌더링 할 수 있음
+
+  function App() {
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <MinutesToHours />
+          </div>
+        );
+      }
+      const root = document.getElementById('root');
+      ReactDOM.render(<App />, root);
+
+  /* 코드 해석
+  분할 정복(divide and conquer)을 함으로써 App 함수는
+  <div>, <h1>, <MinutesToHours>에 있는 모든 요소를 그려줌 */
+
+
+또 다른 컴포넌트를 만들어서
+
+  function KmToMiles() {
+        return <h3>Km to Miles</h3>;
+      }
+
+
+`App` 컴포넌트 안에 스위치를 만들고 싶음
+: `App`이 시/분 변환기에서 km/miles 변환기로 전환할 수 있게 하고 싶어서
+
+  function App() {
+        const [index, setIndex] = React.useState(0);
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <MinutesToHours />
+            <KmToMiles />
+          </div>
+        );
+      }
+
+
+위와 같이 두 개의 컴포넌트를 렌더링 하지 않고 `select` 함수를 만들고 싶음
+
+지금 세 개의 컴포넌트가 있는데
+
+  - `function MinutesToHours() {`
+  - `function KmToMiles() {`
+  - `function App() {`
+      - `root div`를 그려주는 역할 (가장 중요한 컴포넌트)
+      - 이 컴포넌트는 다른 2개의 컴포넌트를 렌더링하고 있음
+
+
+`App` 컴포넌트가 `state`를 가지도록 해서 어떤 변환기를 보고 싶은지 체크
+
+  function App() {
+        const [index, setIndex] = React.useState(0);
+        const onSelect = (event) => {
+          console.log(event.target.value);
+        };
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <select onChange={onSelect}>
+              <option value='0'>Minutes & Hours</option>
+              <option value='1'>Km & Miles</option>
+            </select>
+          </div>
+        );
+      }
+
+  /* 코드 해석
+  select의 change event를 리스닝 - 사용자가 번호를 선택하면
+  setIndex를 이용해서 그 숫자를 state안에 넣음 */
+
+`<select>`
+: React에 속한 애가 아니고 just html 코드, `<select>`는 안에 `<option>`들을 가지고 있음
+
+
+이제 이 데이터들을 state안에 넣고,
+혹시 나중에 수정할 경우를 대비해서 `<select>`에도 `<value>` 넣어줌
+
+  function App() {
+        const [index, setIndex] = React.useState(0);
+        const onSelect = (event) => {
+          setIndex(event.target.value);
+        };
+        return (
+          <div>
+            <h1>Super Converter</h1>
+            <select value={index} onChange={onSelect}>
+              <option value='0'>Minutes & Hours</option>
+              <option value='1'>Km & Miles</option>
+            </select>
+          </div>
+        );
+      }
+  
+
+이제 어떤 걸 보여줄지 고를 차례
+⇒ 컴포넌트 안에 JSX를 사용해서 작은 `if else` 두 개를 만들어보자
+
+  {index === '0' ? <MinutesToHours /> : null}
+  {index === '1' ? <KmToMiles /> : null}
+
+  /* 코드 해석
+  만약 index가 "0"과 같다면 MinutesToHours을 렌더링,
+  그게 아니라면 아무것도 렌더링 x
+
+  만약 index가 "1"과 같다면 KmToMiles를 렌더링,
+  그게 아니라면 아무것도 렌더링 x */
+
++) `{}`를 안 쓰면 text로 인식되고, `{}`를 쓰면 이 안에 JS를 쓸 수 있음
+
+이런 걸 앞으로 엄청 자주 하게 될 텐데 이건 `index`의 변화를 리스닝 해주고 있는 것뿐
+⇒ `<input>`이 있고, 그 안의 값이 바뀌는 것들
+  그리고 변화가 일어나면, `state`가 업데이트 (= 컴포넌트가 보이는 것처럼 변한다는 말)
