@@ -10,3 +10,28 @@ body {
   background-color: #282828;
   height: 100%;
 }
+
+#navigation {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  height: 70px;
+}
+
+#navigation a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  margin: 20px;
+}
+
+.nav {
+  justify-content: center;
+  display: inline-flex;
+  text-align: center;
+}
+
+.nav li {
+  margin: 0;
+  list-style: none;
+}
