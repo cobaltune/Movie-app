@@ -3,17 +3,13 @@
   font-weight: 300;
   padding: 20px;
   border-radius: 25px;
-  color: white;
-  display: grid;
-  grid-template-columns: minmax(150px, 1fr) 2fr;
-  grid-gap: 20px;
   text-decoration: none;
+  color: white;
 }
 
 .movie__img {
-  max-width: 230px;
+  max-width: 313px;
   width: 100%;
-  margin-right: 30px;
 }
 
 .movie__title {
@@ -24,8 +20,11 @@
 
 .movie__year {
   margin: 0;
+  margin-top: 5px;
   font-weight: 300;
   text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
 }
 
 .movie__title a {
@@ -44,8 +43,9 @@
   margin: 5px 0px;
 }
 
-.movie__genres li,
-.movie__year {
+.movie__genres li {
   margin-right: 10px;
   font-size: 14px;
+  font-weight: 500;
+  color: #5ac8f5;
 }
