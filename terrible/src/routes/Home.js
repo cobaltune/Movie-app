@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Movie from '../components/Movie';
 import styles from './Home.module.css';
 import Loading from './Loading';
