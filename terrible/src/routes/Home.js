@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Movie from '../components/Movie';
 import styles from './Home.module.css';
-import Loading from './Loading';
+import Loading from '../components/Loading';
+import logo from '../img/logo.png';
 
 function Home() {
   const [loading, setLoading] = useState(true);
@@ -24,18 +25,24 @@ function Home() {
       {loading ? (
         Loading()
       ) : (
-        <div className={styles.movies}>
-          {movies.map((movie) => (
-            <Movie
-              key={movie.id}
-              id={movie.id}
-              mediumCoverImage={movie.medium_cover_image}
-              title={movie.title}
-              year={movie.year}
-              summary={movie.summary}
-              genres={movie.genres}
-            />
-          ))}
+        <div className={styles.logo}>
+          <div>
+            <img src={logo}></img>
+          </div>
+
+          <div className={styles.movies}>
+            {movies.map((movie) => (
+              <Movie
+                key={movie.id}
+                id={movie.id}
+                mediumCoverImage={movie.medium_cover_image}
+                title={movie.title}
+                year={movie.year}
+                summary={movie.summary}
+                genres={movie.genres}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>
