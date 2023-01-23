@@ -25,8 +25,8 @@ function Home() {
       {loading ? (
         Loading()
       ) : (
-        <div className={styles.logo}>
-          <div>
+        <div>
+          <div className={styles.logo}>
             <img src={logo}></img>
           </div>
 
