@@ -2,28 +2,32 @@
   height: 100%;
   display: flex;
   justify-content: center;
+  padding: 40px 70px 70px 70px;
 }
 
 .movies {
   display: grid;
   grid-template-columns: repeat(3, minmax(200px, 1fr));
   grid-gap: 40px;
-  width: 80%;
-  padding-top: 70px;
+  padding-top: 40px;
 }
 
 @media screen and (max-width: 1090px) {
   .movies {
-    grid-template-columns: 1fr;
     width: 100%;
   }
 }
 
 .logo {
   display: flex;
+  flex-direction: row;
   justify-content: center;
 }
 
 .logo:hover {
   cursor: pointer;
+}
+
+.logo img {
+  width: 60px;
 }
