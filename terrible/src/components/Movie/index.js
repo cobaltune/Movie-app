@@ -11,7 +11,7 @@ function Movie({ id, mediumCoverImage, title, year, summary, genres }) {
           alt={title}
           className={styles.movie__img}
         ></img>
-        <h2 className={styles.movie__title}></h2>
+        <h2 className={styles.movie__title}>{title}</h2>
         <h3 className={styles.movie__year}>({year})</h3>
         <p>{summary.length > 235 ? `${summary.slice(0, 235)}...` : summary}</p>
         <ul className={styles.movie__genres}>
