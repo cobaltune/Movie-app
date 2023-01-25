@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Loading from '../components/Loading';
+import Navigation from '../components/Navigation';
 import styles from './Detail.module.css';
 
 function Detail() {
@@ -20,7 +21,7 @@ function Detail() {
 
   return (
     <div className={styles.container}>
-      {loading ? Loading() : <p>Detail</p>}
+      {loading ? Loading() : <div>{Navigation()}</div>}
     </div>
   );
 }
