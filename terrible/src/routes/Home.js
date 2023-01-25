@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Movie from '../components/Movie';
 import styles from './Home.module.css';
 import Loading from '../components/Loading';
-import logo from '../img/logo.png';
+import Navigation from '../components/Navigation';
 
 function Home() {
   const [loading, setLoading] = useState(true);
@@ -26,10 +26,7 @@ function Home() {
         Loading()
       ) : (
         <div>
-          <div className={styles.logo}>
-            <img src={logo}></img>
-          </div>
-
+          <div>{Navigation()}</div>
           <div className={styles.movies}>
             {movies.map((movie) => (
               <Movie
