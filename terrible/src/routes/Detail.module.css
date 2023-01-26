@@ -2,28 +2,92 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  padding: 40px 70px 70px 70px;
+  padding: 40px 70px 70px;
+}
+
+.container > div {
+  width: 100%;
+  /* 문제
+    원래는 img가 클 때는 img에 맞추고, description이 클 때는 애한테 맞췄는데
+    !container에 flex를 줘서 block요소가 inline요소처럼 됨 (:콘텐츠에 딱 맞게 쪼그라듦)
+    그래서 위에 감싸고 있는 div의 width값을 100%으로 주면 밑에가 잘 먹겠죠 ?
+  */
 }
 
 .detail {
+  display: flex;
+  flex-wrap: wrap;
+  width: 62.5%;
+  margin: 0 auto;
   margin-top: 40px;
-  text-align: center;
   color: white;
+  background-color: #1c1c1c;
+  border-radius: 25px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+/* 내가 원하는 값 (px)               => 1,200px (:detail)
+          %
+  부모 요소값 (고정값, px같은 애들)   => 부모 요소인 1,920px (:전체 화면 = container)
+          *
+         100
+
+  = 내가 원하는 비율 짠 !
+*/
+
+.infowrap {
+  padding: 40px;
+  width: calc(100% - 41.666%);
+  /* poster 제외하고 모든 공간을 infowrap로 채워*/
+  /* 화면을 이 비율로 나눠서 보여줘 */
+}
+
+.poster {
+  width: 41.666%;
+}
+
+.poster > img {
+  vertical-align: middle;
+  width: 100%;
+  /* img의 부모요소를 따라가도록 하기 위해 */
+  height: 100%;
+  /* 미디어쿼리 수정하기 싫으니까 % 때리기 */
 }
 
 .title {
-  margin: 0;
+  margin: 20px 0px 10px 0px;
   padding: 0;
+  font-size: 34px;
 }
 
-.info {
-  margin: 0;
-}
-
-.info span {
+span {
+  font-size: 18px;
   margin-right: 5px;
+  font-weight: 500;
+}
+
+.rating {
+  font-weight: 500;
+  color: #ffd426;
 }
 
 .description {
-  max-width: 660px;
+  color: white;
+  margin-top: 30px;
+}
+
+/* 1090부터 아래 값을 먹여 */
+@media (max-width: 1090px) {
+  .detail {
+    width: 90%;
+  }
+
+  .infowrap {
+    width: 100%;
+  }
+
+  .poster {
+    width: 100%;
+  }
 }
