@@ -5,7 +5,7 @@
   border-radius: 25px;
   text-decoration: none;
   color: white;
-  width: 350px;
+  max-width: 350px;
   transition: 0.3s all ease-in-out;
 }
 
