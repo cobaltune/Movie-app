@@ -17,17 +17,3 @@
     width: 100%;
   }
 }
-
-.logo {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.logo:hover {
-  cursor: pointer;
-}
-
-.logo img {
-  width: 60px;
-}

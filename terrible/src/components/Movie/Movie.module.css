@@ -5,7 +5,21 @@
   border-radius: 25px;
   text-decoration: none;
   color: white;
+<<<<<<< HEAD
   width: 350px;
+=======
+  transition: 0.3s all ease-in-out;
+}
+
+.movie:hover {
+  transform: scale(1.03);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+}
+
+.movie a {
+  color: white;
+  text-decoration: none;
+>>>>>>> d3b3ab223a5a4996c1e0076acbc1b58b2cee0556
 }
 
 .movie__img {
@@ -14,25 +28,17 @@
 }
 
 .movie__title {
-  margin: 10px 0;
+  margin: 10px 0px 5px 0px;
+  font-size: 24px;
   font-weight: bold;
-  text-decoration: none;
 }
 
 .movie__year {
   margin: 0;
   margin-top: 5px;
   font-weight: 300;
-  text-decoration: none;
   font-size: 18px;
   font-weight: 500;
-}
-
-.movie__title a {
-  margin-bottom: 5px;
-  font-size: 24px;
-  color: white;
-  text-decoration: none;
 }
 
 .movie__genres {
