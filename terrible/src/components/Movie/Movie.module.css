@@ -5,9 +5,7 @@
   border-radius: 25px;
   text-decoration: none;
   color: white;
-<<<<<<< HEAD
   width: 350px;
-=======
   transition: 0.3s all ease-in-out;
 }
 
@@ -19,7 +17,6 @@
 .movie a {
   color: white;
   text-decoration: none;
->>>>>>> d3b3ab223a5a4996c1e0076acbc1b58b2cee0556
 }
 
 .movie__img {
