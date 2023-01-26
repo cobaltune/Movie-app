@@ -7,7 +7,7 @@ function Navigation() {
   return (
     <div className={styles.logo}>
       <Link to={`/`}>
-        <img src={logo}></img>
+        <img src={logo} alt='logo'></img>
       </Link>
     </div>
   );
